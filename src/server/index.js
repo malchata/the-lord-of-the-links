@@ -39,7 +39,9 @@ app.use("/css", express.static(resolve(process.cwd(), "dist", "client", "css"), 
 
 // Spin up web server
 app.listen(process.env.PORT || 8080, () => {
-  readFile(resolve(process.cwd(), "dist", "server", "assets.json"), (error, manifestData) => {
+  const assetManifestPath = resolve(process.cwd(), "dist", "server", "assets.json");
+
+  readFile(assetManifestPath, (error, manifestData) => {
     if (error) {
       throw error;
     }
@@ -48,7 +50,7 @@ app.listen(process.env.PORT || 8080, () => {
       res.set("Cache-Control", "max-age=0,s-maxage=0,private,no-store,no-cache");
 
       const metadata = {
-        title: "Home",
+        title: "The Lord of The Links",
         metaTags: [
           {
             name: "description",
