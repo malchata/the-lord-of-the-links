@@ -1,0 +1,71 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+div,
+span,
+h1,
+h2,
+h3,
+h4,
+p,
+a,
+em,
+img,
+strong,
+u,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+footer,
+header,
+nav,
+section {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+footer,
+header,
+nav,
+section {
+  display: block;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  line-height: 1;
+  background: var(background);
+  font-family: monospace;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+input,
+button {
+  appearance: none;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  font-family: monospace;
+}
+
+ol,
+ul {
+  list-style: none;
+}

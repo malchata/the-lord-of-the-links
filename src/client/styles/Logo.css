@@ -1,0 +1,10 @@
+.logo__text {
+  clip: rect(0, 0, 0, 0);
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.logo__shape {
+  fill: var(--foreground);
+}

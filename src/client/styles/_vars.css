@@ -1,0 +1,65 @@
+/* Light mode colors */
+@media screen and (prefers-color-scheme: light) {
+  :root {
+    --foreground: #3e2f5b;
+    --background: #f49d6e;
+  }
+}
+
+/* Dark mode colors */
+@media screen and (prefers-color-scheme: dark) {
+  :root {
+    --foreground: #f49d6e;
+    --background: #3e2f5b;
+  }
+}
+
+/* Other variables */
+:root {
+  /* H1 text sizes */
+  --h1-min-size: 2.309rem;
+  --h1-flex-size: 4.618vmax;
+  --h1-max-size: 4.04075rem;
+
+  /* H2 text sizes */
+  --h2-min-size: 2rem;
+  --h2-flex-size: 4vmax;
+  --h2-max-size: 3.5rem;
+
+  /* H3 text sizes */
+  --h3-min-size: 1.7323516674rem;
+  --h3-flex-size: 3.4647033348vmax;
+  --h3-max-size: 3.031615418rem;
+
+  /* H4 text sizes */
+  --h4-min-size: 1.5005211498rem;
+  --h4-flex-size: 3.0010422995vmax;
+  --h4-max-size: 2.6259120121rem;
+
+  /* First paragraph text sizes */
+  --p1-min-size: 1.2997151578rem;
+  --p1-flex-size: 2.5994303158vmax;
+  --p1-max-size: 2.2745015262rem;
+
+  /* Paragraph text sizes */
+  --p-min-size: 1.1545rem;
+  --p-flex-size: 2.020375vmax;
+  --p-max-size: 1.5874375rem;
+
+  /* Tiny text size */
+  --tiny-min-size: 1rem;
+  --tiny-flex-size: 1.75vmax;
+  --tiny-max-size: 1.375rem;
+
+  /* Applied text sizes */
+  --h1-text-size: clamp(var(--h1-min-size), var(--h1-flex-size), var(--h1-max-size));
+  --h2-text-size: clamp(var(--h2-min-size), var(--h2-flex-size), var(--h2-max-size));
+  --h3-text-size: clamp(var(--h3-min-size), var(--h3-flex-size), var(--h3-max-size));
+  --h4-text-size: clamp(var(--h4-min-size), var(--h4-flex-size), var(--h4-max-size));
+  --p1-text-size: clamp(var(--p1-min-size), var(--p1-flex-size), var(--p1-max-size));
+  --p-text-size: clamp(var(--p-min-size), var(--p-flex-size), var(--p-max-size));
+  --tiny-text-size: clamp(var(--tiny-min-size), var(--tiny-flex-size), var(--tiny-max-size));
+
+  /* Fonts */
+  --monospace: "Consolas", "Courier New", monospace;
+}

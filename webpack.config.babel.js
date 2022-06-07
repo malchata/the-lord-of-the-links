@@ -1,26 +1,26 @@
 /* eslint-env node */
 
+// Built-ins
+import { resolve } from "path";
+
 // webpack-specific
 import WebpackNodeExternals from "webpack-node-externals";
 import AssetsWebpackPlugin from "assets-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
 export const mode = process.env.NODE_ENV === "production" ? "production" : "development";
-export const src = (...args) => path.resolve(process.cwd(), "src", ...args);
-export const dist = (...args) => path.resolve(process.cwd(), "dist", ...args);
+export const src = (...args) => resolve(process.cwd(), "src", ...args);
+export const dist = (...args) => resolve(process.cwd(), "dist", ...args);
 export const isProd = mode === "production";
-export const assetsPluginInstance = new AssetsWebpackPlugin({
-  filename: "assets.json",
-  path: dist("server"),
-  update: true,
-  fileTypes: ["css", "js"]
-});
 
 // webpack configs
 module.exports = [
   // Client
   {
     name: "client",
+    entry: {
+      home: src("client", "routes", "index.jsx")
+    },
     output: {
       filename: isProd ? "js/[name].[chunkhash:8].js" : "js/[name].js",
       chunkFilename: isProd ? "js/[name].[chunkhash:8].js" : "js/[name].js",
@@ -42,21 +42,22 @@ module.exports = [
           ]
         },
         {
-          test: /\.(c|le)ss$/i,
+          test: /\.css$/i,
           use: [
             MiniCssExtractPlugin.loader,
             "css-loader",
-            "postcss-loader",
-            "less-loader"
+            "postcss-loader"
           ]
         }
       ]
     },
-    entry: {
-      home: src("client", "routes", "home.js")
-    },
     plugins: [
-      assetsPluginInstance,
+      new AssetsWebpackPlugin({
+        filename: "assets.json",
+        path: dist("server"),
+        update: true,
+        fileTypes: ["css", "js"]
+      }),
       new MiniCssExtractPlugin({
         filename: `css/${isProd ? "[name].[contenthash:8].css" : "[name].css"}`,
         chunkFilename: `css/${isProd ? "[name].[contenthash:8].css" : "[name].css"}`
@@ -65,20 +66,19 @@ module.exports = [
     resolve: {
       alias: {
         "Components": src("client", "components"),
+        "Layouts": src("client", "layouts"),
         "Styles": src("client", "styles")
       }
     },
-    {
-      mode,
-      devtool: isProd ? "hidden-source-map" : "source-map",
-      stats: {
-        exclude: /\.map$/i,
-        excludeAssets: /\.map$/i,
-        excludeModules: /\.map$/i,
-        builtAt: false,
-        children: false,
-        modules: false
-      },
+    mode,
+    devtool: isProd ? "hidden-source-map" : "source-map",
+    stats: {
+      exclude: /\.map$/i,
+      excludeAssets: /\.map$/i,
+      excludeModules: /\.map$/i,
+      builtAt: false,
+      children: false,
+      modules: false
     }
   },
   // Server
@@ -95,7 +95,7 @@ module.exports = [
     module: {
       rules: [
         {
-          test: /\.m?js$/i,
+          test: /\.m?jsx?$/i,
           exclude: /node_modules/i,
           use: [
             {
@@ -115,8 +115,10 @@ module.exports = [
     resolve: {
       alias: {
         "Components": src("client", "components"),
+        "Layouts": src("client", "layouts"),
         "Styles": src("client", "styles"),
-        "Helpers": src("server", "helpers")
+        "Helpers": src("server", "helpers"),
+        "Data": src("server", "data")
       }
     },
     externals: [

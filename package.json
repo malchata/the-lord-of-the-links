@@ -4,7 +4,13 @@
   "description": "One input responsiveness demo to rule them all.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf ./dist",
+    "build": "npm run clean && NODE_ENV=production npx webpack --progress",
+    "build:dev": "npm run clean && NODE_ENV=development npx webpack --progress",
+    "build:stats": "NODE_ENV=production npx webpack --progress --profile --json > compilation-stats.json",
+    "start": "npm run build && npm run server",
+    "server": "node ./dist/server/index.js",
+    "preview": "npm run build:dev && npm run server"
   },
   "repository": {
     "type": "git",
@@ -32,16 +38,21 @@
   },
   "homepage": "https://github.com/malchata/lord-of-the-links#readme",
   "dependencies": {
-    "compress": "^0.99.0",
+    "body-parser": "^1.20.0",
+    "compression": "^1.7.4",
     "express": "^4.18.1",
     "express-sslify": "^1.2.0",
     "preact": "^10.7.3",
-    "preact-render-to-string": "^5.2.0"
+    "preact-render-to-string": "^5.2.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.17.10",
     "@babel/core": "^7.18.2",
+    "@babel/node": "^7.17.10",
     "@babel/preset-env": "^7.18.2",
     "@babel/preset-react": "^7.17.12",
+    "@babel/register": "^7.17.7",
     "assets-webpack-plugin": "^7.1.1",
     "autoprefixer": "^10.4.7",
     "babel-loader": "^8.2.5",

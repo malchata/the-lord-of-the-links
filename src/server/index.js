@@ -6,15 +6,15 @@ import { resolve } from "path";
 import express from "express";
 import compression from "compression";
 import enforceTLS from "express-sslify";
-import { h } from "preact";
+import { h, Fragment } from "preact";
 
 // App-specific
-import html from "Helpers/html";
-import Home from "Components/Home";
+import data from "Data/index.js";
+import html from "Helpers/html.js";
+import Home from "Layouts/Home.jsx";
 
 // Init express app
 const app = express();
-let renderCache = {};
 
 // Specify caching routine
 const staticOptions = {
@@ -23,11 +23,12 @@ const staticOptions = {
   }
 };
 
-// Use compression.
-app.use(compression());
-
-// Force TLS if in prod and minify HTML
+// Check if we're on prod
 if (process.env.NODE_ENV === "production") {
+  // Use compression.
+  app.use(compression());
+
+  // Force TLS
   app.use(enforceTLS.HTTPS({
     trustProtoHeader: true
   }));
@@ -59,11 +60,11 @@ app.listen(process.env.PORT || 8080, () => {
         ]
       };
 
-      const html = html(metadata, "/", <Home />, JSON.parse(manifestData.toString()));
+      const markup = html(metadata, "/", <Home />, JSON.parse(manifestData.toString()));
 
       res.set("Content-Type", "text/html");
       res.status(200);
-      res.send(html);
+      res.send(markup);
     });
 
     app.post("/search", (req, res) => {
