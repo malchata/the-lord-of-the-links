@@ -62,4 +62,7 @@
 
   /* Fonts */
   --monospace: "Consolas", "Courier New", monospace;
+
+  /* Containers */
+  --max-container-width: 32rem;
 }

@@ -1,13 +1,15 @@
 // Vendors
-import { h, render, Component } from "preact";
+import { h, Fragment, render, Component } from "preact";
 
 // App-specific
 import Logo from "Components/Logo.jsx";
+import Autocomplete from "Components/Autocomplete.jsx";
 
 const Home = () => (
-  <main>
+  <>
     <Logo />
-  </main>
+    <Autocomplete />
+  </>
 );
 
 export default Home;

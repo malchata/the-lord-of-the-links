@@ -1,0 +1,27 @@
+.autocomplete {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  align-content: center;
+}
+
+.autocomplete__label {
+  font-size: var(--h5-text-size);
+  line-height: 1.309;
+  margin: 0 0 1rem;
+  text-align: center;
+  display: block;
+  font-weight: bold;
+}
+
+.autocomplete__field {
+  width: 100%;
+  background: var(--foreground);
+  color: var(--background);
+  font-size: var(--h4-text-size);
+  text-align: center;
+  appearance: none;
+  border: 0;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}

@@ -1,7 +1,12 @@
 // Vendors
-import { h, render, Component } from "preact";
+import { h, render, Component, hydrate } from "preact";
 
 // App-specific
 import Home from "Layouts/Home.jsx";
 
-export default Home;
+// Base styles
+import "Styles/_vars.css";
+import "Styles/_reset.css";
+
+// Hydrate!
+hydrate(<Home />, document.getElementById("app"));

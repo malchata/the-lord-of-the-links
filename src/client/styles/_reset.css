@@ -48,11 +48,16 @@ html {
 
 body {
   line-height: 1;
-  background: var(background);
-  font-family: monospace;
+  background: var(--background);
+  font-family: "Georgia", serif;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
+  align-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 1rem;
+  color: var(--foreground);
 }
 
 input,
@@ -68,4 +73,14 @@ button {
 ol,
 ul {
   list-style: none;
+}
+
+#app {
+  max-width: var(--max-container-width);
+  width: 100%;
+}
+
+a {
+  text-decoration: underline;
+  color: var(--foreground);
 }

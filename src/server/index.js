@@ -3,6 +3,7 @@ import { readFile } from "fs";
 import { resolve } from "path";
 
 // Vendors
+import bodyParser from "body-parser";
 import express from "express";
 import compression from "compression";
 import enforceTLS from "express-sslify";
@@ -38,6 +39,9 @@ if (process.env.NODE_ENV === "production") {
 app.use("/js", express.static(resolve(process.cwd(), "dist", "client", "js"), staticOptions));
 app.use("/css", express.static(resolve(process.cwd(), "dist", "client", "css"), staticOptions));
 
+// Parse application/json for POST requests
+app.use(bodyParser.json());
+
 // Spin up web server
 app.listen(process.env.PORT || 8080, () => {
   const assetManifestPath = resolve(process.cwd(), "dist", "server", "assets.json");
@@ -67,10 +71,10 @@ app.listen(process.env.PORT || 8080, () => {
       res.send(markup);
     });
 
-    app.post("/search", (req, res) => {
+    app.post("/search/", (req, res) => {
       res.set("Cache-Control", "max-age=0,s-maxage=0,private,no-store,no-cache");
 
-      // TODO
+      console.dir(req.body);
     });
   });
 });
