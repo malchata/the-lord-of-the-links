@@ -39,7 +39,7 @@ class Autocomplete extends Component {
           </fieldset>
         </form>
         <ul aria-live="assertive" className="autocomplete__results">
-          {this.state.results.map(result => <li class="autocomplete__result"><li>);}
+          {this.state.results}
         </ul>
       </section>
     );
