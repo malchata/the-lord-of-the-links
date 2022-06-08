@@ -1,8 +1,8 @@
-.autocomplete {
+.autocomplete__fieldset {
   display: flex;
   flex-flow: column nowrap;
-  align-items: center;
-  align-content: center;
+  align-items: stretch;
+  align-content: stretch;
 }
 
 .autocomplete__label {
@@ -15,7 +15,6 @@
 }
 
 .autocomplete__field {
-  width: 100%;
   background: var(--foreground);
   color: var(--background);
   font-size: var(--h4-text-size);
@@ -26,4 +25,11 @@
   padding: 0.25rem;
   border-radius: 0.25rem;
   font-family: "Georgia", serif;
+  margin: 0 0 1rem;
+}
+
+.autocomplete__result {
+  text-align: center;
+  margin: 0 0 .5ch;
+  font-size: var(--h5-text-size);
 }

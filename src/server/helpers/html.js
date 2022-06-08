@@ -19,7 +19,6 @@ export default function (metadata, route, component, assets) {
       </head>
       <body>
         <main id="app">${render(component)}</main>
-        <script defer src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver%2CIntersectionObserverEntry"></script>
         ${scriptMarkup}
       </body>
     </html>

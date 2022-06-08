@@ -17,23 +17,40 @@ class Autocomplete extends Component {
   async sendFetch (event) {
     const query = event.target.value;
 
-    const results = await fetch("/search/", {
+    if (query.length === 0) {
+      this.setState({
+        results: []
+      });
+
+      return;
+    }
+
+    const response = await fetch("/search/", {
       method: "POST",
       cache: "no-cache",
-      "Content-Type": "application/json",
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
         query
       })
     });
 
-    console.dir(results);
+    const links = await response.json();
+    const results = Object.entries(links).map(([ title, link ]) => {
+      return <li className="autocomplete__result"><a href={link} rel="noopener" target="_blank">{title}</a></li>
+    });
+
+    this.setState({
+      results
+    });
   }
 
   render () {
     return (
       <section className="autocomplete">
         <form>
-          <fieldset>
+          <fieldset className="autocomplete__fieldset">
             <label className="autocomplete__label" for="autocomplete-field">Search the Tolkien Gateway:</label>
             <input autocomplete="off" onKeyup={this.sendFetch} type="text" htmlFor="autocomplete-field" className="autocomplete__field" />
           </fieldset>

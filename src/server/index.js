@@ -3,7 +3,6 @@ import { readFile } from "fs";
 import { resolve } from "path";
 
 // Vendors
-import bodyParser from "body-parser";
 import express from "express";
 import compression from "compression";
 import enforceTLS from "express-sslify";
@@ -40,7 +39,7 @@ app.use("/js", express.static(resolve(process.cwd(), "dist", "client", "js"), st
 app.use("/css", express.static(resolve(process.cwd(), "dist", "client", "css"), staticOptions));
 
 // Parse application/json for POST requests
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Spin up web server
 app.listen(process.env.PORT || 8080, () => {
@@ -72,10 +71,23 @@ app.listen(process.env.PORT || 8080, () => {
     });
 
     app.post("/search/", (req, res) => {
+      res.set("Content-Type", "application/json");
       res.set("Cache-Control", "max-age=0,s-maxage=0,private,no-store,no-cache");
 
+      const query = req.body.query.toLowerCase();
+      let results = {};
+      const rawData = Object.entries(data).filter(([ title ]) => {
+        const lowerCaseTitle = title.toLowerCase().normalize('NFKD').replace(/[^\w]/g, "");
 
-      console.dir(req.body);
+        return lowerCaseTitle.startsWith(query);
+      }).slice(0, 9);
+
+      rawData.forEach(([title, link]) => {
+        results[title] = link;
+      });
+
+      res.status(200);
+      res.send(JSON.stringify(results));
     });
   });
 });
