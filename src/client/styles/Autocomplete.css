@@ -33,3 +33,58 @@
   margin: 0 0 .5ch;
   font-size: var(--h5-text-size);
 }
+
+.autocomplete__debug {
+  gap: 1rem;
+  flex-flow: row nowrap;
+  border: 0.25rem solid var(--background);
+  position: fixed;
+  bottom: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--foreground);
+  color: var(--background);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  display: none;
+}
+
+.autocomplete__debug.show {
+  display: flex;
+}
+
+.autocomplete__debug__field {
+  line-height: 1;
+}
+
+.autocomplete__debug__checkbox {
+  vertical-align: middle;
+  display: inline-grid;
+  place-content: center;
+  cursor: pointer;
+  height: 1.125rem;
+  width: 1.125rem;
+  border: 0.125rem solid var(--background);
+  margin-right: 0.25rem;
+  border-radius: 0.25rem;
+  font: inherit;
+}
+
+.autocomplete__debug__checkbox::before {
+  content: "";
+  width: 0.875rem;
+  height: 0.875rem;
+  transform: scale(0);
+  box-shadow: inset 1em 1em var(--background);
+  display: block;
+  border-radius: 0.125rem;
+}
+
+.autocomplete__debug__checkbox:checked::before {
+  content: "";
+  transform: scale(0.8);
+}
+
+.autocomplete__debug__label {
+  vertical-align: middle;
+}

@@ -84,3 +84,11 @@ a {
   text-decoration: underline;
   color: var(--foreground);
 }
+
+strong {
+  font-weight:  700;
+}
+
+em {
+  font-style: italic;
+}

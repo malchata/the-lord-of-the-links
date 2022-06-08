@@ -70,17 +70,18 @@ app.listen(process.env.PORT || 8080, () => {
       res.send(markup);
     });
 
-    app.post("/search/", (req, res) => {
+    app.post("/search/", ({ body }, res) => {
       res.set("Content-Type", "application/json");
       res.set("Cache-Control", "max-age=0,s-maxage=0,private,no-store,no-cache");
 
-      const query = req.body.query.toLowerCase();
-      let results = {};
+      const query = body.query.toLowerCase();
       const rawData = Object.entries(data).filter(([ title ]) => {
-        const lowerCaseTitle = title.toLowerCase().normalize('NFKD').replace(/[^\w]/g, "");
+        const lowerCaseTitle = title.toLowerCase();
+        const normalizedTitle = lowerCaseTitle.normalize("NFKD").replace(/[^\w\s]/g, "");
 
         return lowerCaseTitle.startsWith(query);
       }).slice(0, 9);
+      let results = {};
 
       rawData.forEach(([title, link]) => {
         results[title] = link;
