@@ -12,6 +12,7 @@
   text-align: center;
   display: block;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .autocomplete__field {
@@ -47,6 +48,8 @@
   padding: 0.5rem;
   border-radius: 0.5rem;
   display: none;
+  justify-content: center;
+  width: 100%;
 }
 
 .autocomplete__debug.show {
@@ -87,4 +90,5 @@
 
 .autocomplete__debug__label {
   vertical-align: middle;
+  font-size: var(--h5-text-size);
 }

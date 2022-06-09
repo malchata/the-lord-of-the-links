@@ -1,5 +1,6 @@
 // Vendors
-import { h, Fragment, render, Component, createRef } from "preact";
+import { h, render, Component, createRef } from "preact";
+import { throttle } from "lodash";
 
 // App-specific
 import "Styles/Autocomplete.css";
@@ -8,7 +9,9 @@ class Autocomplete extends Component {
   constructor (props) {
     super(props);
 
+    this.fetchWrapper = this.fetchWrapper.bind(this);
     this.sendFetch = this.sendFetch.bind(this);
+    this.throttlingNotice = this.throttlingNotice.bind(this);
     this.toggleMainThreadWork = this.toggleMainThreadWork.bind(this);
     this.state = {
       results: [],
@@ -16,8 +19,8 @@ class Autocomplete extends Component {
       tasksRun: 0
     }
     this.taskInterval;
-    this.queryBox = createRef();
-    this.pollingCheckbox = createRef();
+    this.queryBoxRef = createRef();
+    this.throttlingCheckboxRef = createRef();
   }
 
   componentDidMount () {
@@ -25,20 +28,21 @@ class Autocomplete extends Component {
   }
 
   fetchWrapper () {
-    console.dir(this.pollingCheckbox);
-    if (this.pollingCheckbox.current.checked === true) {
-      console.log("Input throttled.");
+    if (this.throttlingCheckboxRef.current.checked === true) {
+      throttle(this.sendFetch, 100, {
+        leading: false,
+        trailing: true
+      });
 
-      _window.throttle(this.sendFetch, 1000);
-    } else {
-      console.log("Input not throttled.");
-
-      this.sendFetch();
+      return;
     }
+
+    this.sendFetch();
   }
 
   async sendFetch () {
-    const query = this.queryBox.current.value;
+    const query = this.queryBoxRef.current.value;
+    console.dir(query);
 
     if (query.length === 0) {
       this.setState({
@@ -56,7 +60,7 @@ class Autocomplete extends Component {
         console.log(`Debugger state: ${this.state.debug ? "ON" : "OFF"}.`);
       });
 
-      event.target.value = "";
+      this.queryBoxRef.current.value = "";
 
       return;
     }
@@ -82,24 +86,34 @@ class Autocomplete extends Component {
     });
   }
 
-  toggleMainThreadWork (event) {
-    if (event.target.checked === true) {
+  throttlingNotice ({ target }) {
+    if (this.throttlingCheckboxRef.current.checked === true) {
+      console.log("Throttling turned ON.")
+    } else {
+      console.log("Throttling turned OFF.")
+    }
+  }
+
+  toggleMainThreadWork ({ target }) {
+    if (target.checked === true) {
       console.log("Generating synthetic main thread work...");
 
       this.taskInterval = setInterval(() => {
-        performance.mark(`Start task ${this.state.tasksRun}`);
-
+        let arr = [];
         const blockingStart = performance.now();
         const blockingTime = Math.floor(Math.random() * 500);
 
+        console.log(`${blockingStart} < ${blockingStart} + ${blockingTime}`);
+
         while (performance.now() < blockingStart + blockingTime) {
-          // Block...
+          console.log("task time: " + blockingTime);
+          arr.push(Math.random() * performance.now / blockingStart / blockingTime);
         }
 
         this.setState({
           tasksRun: this.state.tasksRun + 1
         });
-      }, intervalTime);
+      }, 1000);
     } else {
       console.log("Stopping work...");
 
@@ -114,14 +128,14 @@ class Autocomplete extends Component {
           <fieldset className="autocomplete__fieldset">
             <section className={`autocomplete__debug${this.state.debug ? " show" : ""}`}>
               <div className="autocomplete__debug__field">
-                <input ref={this.pollingCheckbox} type="checkbox" id="polling" className="autocomplete__debug__checkbox" />&nbsp;<label htmlFor="polling" className="autocomplete__debug__label">Polling</label>
+                <input onChange={this.throttlingNotice} ref={this.throttlingCheckboxRef} type="checkbox" id="throttling" className="autocomplete__debug__checkbox" />&nbsp;<label htmlFor="throttling" className="autocomplete__debug__label">Throttling</label>
               </div>
               <div className="autocomplete__debug__field">
                 <input onChange={this.toggleMainThreadWork} type="checkbox" id="mainThreadTasks" className="autocomplete__debug__checkbox" />&nbsp;<label htmlFor="mainThreadTasks" className="autocomplete__debug__label">Generate work ({this.state.tasksRun} tasks run)</label>
               </div>
             </section>
             <label className="autocomplete__label" htmlFor="autocomplete-field">Search the <a href="http://www.tolkiengateway.net/wiki/Main_Page" rel="noopener">Tolkien Gateway</a></label>
-            <input autocomplete="off" ref={this.queryBox} onKeyup={this.fetchWrapper} type="text" id="autocomplete-field" className="autocomplete__field" />
+            <input autocomplete="off" ref={this.queryBoxRef} onKeyup={this.fetchWrapper} type="text" id="autocomplete-field" className="autocomplete__field" />
           </fieldset>
         </form>
         <ul aria-live="assertive" className="autocomplete__results">
