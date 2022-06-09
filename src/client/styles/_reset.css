@@ -54,9 +54,7 @@ body {
   flex-flow: column nowrap;
   align-items: center;
   align-content: center;
-  width: 100vw;
-  height: 100vh;
-  padding: 1rem;
+  padding: 0.75rem;
   color: var(--foreground);
 }
 

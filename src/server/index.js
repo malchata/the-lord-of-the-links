@@ -80,7 +80,7 @@ app.listen(process.env.PORT || 8080, () => {
         const normalizedTitle = lowerCaseTitle.normalize("NFKD").replace(/[^\w\s]/g, "");
 
         return lowerCaseTitle.startsWith(query);
-      }).slice(0, 9);
+      }).slice(0, 10);
       let results = {};
 
       rawData.forEach(([title, link]) => {
