@@ -14,14 +14,15 @@ class Autocomplete extends Component {
     this.sendFetch = this.sendFetch.bind(this);
     this.throttlingNotice = this.throttlingNotice.bind(this);
     this.toggleMainThreadWork = this.toggleMainThreadWork.bind(this);
-    this.runSyntheticTask = this.runSyntheticTask.bind(this);
     this.toggleLogging = this.toggleLogging.bind(this);
+    this.runSyntheticTask = this.runSyntheticTask.bind(this);
 
     // Initial state
     this.state = {
       results: [],
       debug: false,
       tasksRun: 0,
+      runSyntheticTasks: false,
       logging: false,
       throttlingActive: false,
       throttleTime: 150,
@@ -37,30 +38,51 @@ class Autocomplete extends Component {
   }
 
   componentDidMount () {
-    // Create the mark
-    performance.mark("component_mounted");
-
     // This should always log, regardless of logging setting.
-    console.log("Tip: to toggle the debugger, type \"debug\" into the search box.")
+    console.log("Tip: to toggle the debugger, type \"debug\" into the search box.");
+  }
+
+  runSyntheticTask () {
+    // Create the starting mark
+    performance.mark("synthetic_task_mark");
+
+    let arr = [];
+    const blockingStart = performance.now();
+    const blockingTime = Math.floor(Math.random() * 81.25);
+
+    if (this.state.logging === true) {
+      console.log("Synthetic task time: " + blockingTime);
+    }
+
+    while (performance.now() < blockingStart + blockingTime) {
+      arr.push(Math.random() * performance.now / blockingStart / blockingTime);
+    }
+
+    // Increment the task counter.
+    this.setState({
+      tasksRun: this.state.tasksRun + 1
+    }, () => {
+      // End the task measure.
+      performance.measure("synthetic_task", "synthetic_task_mark");
+    });
   }
 
   // Shows a loading spinner on keydown
   showSpinner () {
-    // Create the starting mark
-    performance.mark("input_keydown_mark");
+    if (this.state.runSyntheticTasks === true) {
+      this.runSyntheticTask();
+    }
 
     this.setState({
-      showSpinner: this.queryBoxRef.current.value.length > 0
-    }, () => {
-      // End the task measure.
-      performance.measure("input_keydown", "input_keydown_mark");
+      showSpinner: this.queryBoxRef.current.value.length > 0 && this.state.results.length === 0
     });
   }
 
   // Wraps `this.sendFetch` so throttling can be applied
   fetchWrapper () {
-    // Create the starting mark
-    performance.mark("input_keyup_mark");
+    if (this.state.runSyntheticTasks === true) {
+      this.runSyntheticTask();
+    }
 
     // Yucky ref checks here, but it works.
     if (this.throttlingCheckboxRef.current.checked === true) {
@@ -78,7 +100,7 @@ class Autocomplete extends Component {
             // Send the fetch request.
             this.sendFetch();
 
-            // We"re ready to accept new inputs.
+            // We're ready to accept new inputs.
             this.setState({
               throttlingActive: false
             });
@@ -95,6 +117,11 @@ class Autocomplete extends Component {
 
   // Sends a fetch to the API for nerdy links.
   async sendFetch () {
+    // Run a synthetic task
+    if (this.state.runSyntheticTasks === true) {
+      this.runSyntheticTask();
+    }
+
     // Yucky ref stuff again, but it works.
     const query = this.queryBoxRef.current.value;
 
@@ -117,9 +144,7 @@ class Autocomplete extends Component {
         debug: !this.state.debug,
         results: []
       }, () => {
-        if (this.state.logging === true) {
-          console.log(`Debugger state: ${this.state.debug ? "ON" : "OFF"}.`);
-        }
+        console.log(`Debugger state: ${this.state.debug ? "ON" : "OFF"}.`);
       });
 
       // Clear the query input.
@@ -150,22 +175,13 @@ class Autocomplete extends Component {
 
     // Hide the spinner
     this.setState({
-      showSpinner: false
-    }, () => {
-      this.setState({
-        results
-      });
-
-      // End the task measure.
-      performance.measure("input_keyup", "input_keyup_mark");
+      showSpinner: false,
+      results
     });
   }
 
   // This just logs to the console if throttling is active or not.
   throttlingNotice ({ target }) {
-    // Create the starting mark
-    performance.mark("input_toggle_throttle_notice_mark");
-
     if (this.state.logging === true) {
       if (this.throttlingCheckboxRef.current.checked === true) {
         console.log("Throttling turned ON.")
@@ -173,80 +189,36 @@ class Autocomplete extends Component {
         console.log("Throttling turned OFF.")
       }
     }
-
-    // End the task measure.
-    performance.measure("input_toggle_throttle_notice", "input_toggle_throttle_notice_mark");
   }
 
   // Toggles logging behavior.
   toggleLogging () {
-    // Create the starting mark
-    performance.mark("input_toggle_logging_mark");
-
     this.setState({
       logging: !this.state.logging
     })
-
-    // End the task measure.
-    performance.measure("input_toggle_logging", "input_toggle_logging_mark");
   }
 
   // Generates synthetic main thread work.
   toggleMainThreadWork ({ target }) {
-    // Create the starting mark
-    performance.mark("input_toggle_synthetic_work_mark");
-
+    // Toggle whether synthetic tasks should be run
     if (target.checked === true) {
+      this.setState({
+        runSyntheticTasks: true
+      });
+
       if (this.state.logging === true) {
-        console.log("Generating synthetic main thread work...");
+        console.log("Synthetic task generation: ON.");
       }
-
-      // Orchestrates synthetic work on a set interval.
-      this.taskInterval = setInterval(this.runSyntheticTask, 1000);
-
-      // End the task measure.
-      performance.measure("input_toggle_synthetic_work", "input_toggle_synthetic_work_mark");
-    } else {
-      if (this.state.logging === true) {
-        console.log("Stopping synthetic main thread work...");
-      }
-
-      // Stop doing synthetic work.
-      clearInterval(this.taskInterval);
-
-      // End the task measure.
-      performance.measure("input_toggle_synthetic_work", "input_toggle_synthetic_work_mark");
 
       return;
     }
 
     this.setState({
-      tasksRun: 0
-    });
-  }
-
-  runSyntheticTask () {
-    // Create the starting mark
-    performance.mark("synthetic_task_mark");
-
-    let arr = [];
-    const blockingStart = performance.now();
-    const blockingTime = Math.floor(Math.random() * 500);
-
-    if (this.state.logging === true) {
-      console.log("Synthetic task time: " + blockingTime);
-    }
-
-    while (performance.now() < blockingStart + blockingTime) {
-      arr.push(Math.random() * performance.now / blockingStart / blockingTime);
-    }
-
-    // Increment the task counter.
-    this.setState({
-      tasksRun: this.state.tasksRun + 1
+      runSyntheticTasks: false
     }, () => {
-      // End the task measure.
-      performance.measure("synthetic_task", "synthetic_task_mark");
+      if (this.state.logging === true) {
+        console.log("Synthetic task generation: ON.");
+      }
     });
   }
 
