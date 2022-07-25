@@ -71,7 +71,7 @@ module.exports = [
       }
     },
     mode,
-    devtool: isProd ? "hidden-source-map" : "source-map",
+    devtool: "source-map",
     stats: {
       exclude: /\.map$/i,
       excludeAssets: /\.map$/i,
