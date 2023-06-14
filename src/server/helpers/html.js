@@ -10,7 +10,7 @@ export default function (metadata, route, component, assets) {
     <!DOCTYPE html>
     <html class="no-js" lang="en" dir="ltr">
       <head>
-        <title>The Lord of The Links</title>
+        <title>The Lord of The Links!</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
         ${metadata.metaTags.map(metaTag => `<meta${Object.keys(metaTag).map(metaTagAttribute => ` ${metaTagAttribute}="${metaTag[metaTagAttribute]}"`).join("")}>`).join("")}
